@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Haunted Castle Ending</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="page-ending">
+    <main class="story">
+      <h1 id="ending-title">Safe at Sunrise</h1>
+      <p id="ending-text">You escape the haunted castle just before sunrise. The treasure is safe, but the castle is still waiting.</p>
+      <a class="choice-btn" href="index.html">Play again</a>
+    </main>
+
+    <script>
+      try {
+        localStorage.setItem('haunted-castle-lives', '3');
+        localStorage.removeItem('haunted-castle-dead');
+      } catch (error) {
+        console.warn('Could not reset castle ending state.', error);
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const endingState = params.get('ending');
+      const title = document.getElementById('ending-title');
+      const text = document.getElementById('ending-text');
+
+      if (endingState === 'eaten') {
+        title.textContent = 'The Garden Eats You';
+        text.textContent = 'The thorned flowers tear through your skin and drag you beneath the roots. The castle keeps your name. You have no lives left.';
+      } else if (endingState === 'family') {
+        title.textContent = 'You Chose Your Family';
+        text.textContent = 'You refuse the treasure and save your family from the castle’s hunger. Dracula bows his head and lets you leave in peace.';
+      } else if (endingState === 'treasure') {
+        title.textContent = 'You Left It Behind';
+        text.textContent = 'You walk away from the gold and leave the treasure behind. Dracula loses his prize, but the castle lets you escape with your conscience intact.';
+      } else if (endingState === 'vampire') {
+        title.textContent = 'You Became a Vampire';
+        text.textContent = 'You keep the treasure, but Dracula strikes you down and drains you of your soul. When you rise, your eyes burn red and the castle claims you as one of its own.';
+      }
+    </script>
+  </body>
+</html>

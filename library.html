@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Haunted Library</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="page-library">
+    <main class="story">
+      <span class="library-shelf shelf-left" aria-hidden="true"></span>
+      <span class="library-shelf shelf-right" aria-hidden="true"></span>
+      <h1>Haunted Library</h1>
+      <p id="library-status">The bookcase hums with a hidden code. Choose any four books, but only the right four will open the lock.</p>
+
+      <div class="book-grid" aria-label="Book selection puzzle">
+        <button class="book-btn" type="button">Sea of Fire</button>
+        <button class="book-btn" type="button">Fall in to Black Void</button>
+        <button class="book-btn" type="button">The Thorn Atlas</button>
+        <button class="book-btn" type="button">The Unknown Scroll</button>
+        <button class="book-btn" type="button">The One that Murders</button>
+        <button class="book-btn" type="button">The Silent Treatment</button>
+        <button class="book-btn" type="button">The Light That Burns The Sky</button>
+        <button class="book-btn" type="button">The Wendigo</button>
+        <button class="book-btn" type="button">The Stone Cutter</button>
+        <button class="book-btn" type="button">The Monarch</button>
+      </div>
+
+      <div id="library-actions" class="library-actions" aria-live="polite" hidden>
+        <a class="choice-btn" href="tower.html" tabindex="-1" aria-disabled="true" style="pointer-events: none; opacity: 0.45;">Climb to the tower</a>
+        <a class="choice-btn" href="garden.html" tabindex="-1" aria-disabled="true" style="pointer-events: none; opacity: 0.45;">Follow the garden map</a>
+      </div>
+    </main>
+
+    <script>
+      const correctBooks = [
+        'Sea of Fire',
+        'The Light That Burns The Sky',
+        'The Monarch',
+        'The Unknown Scroll'
+      ];
+      const selectedBooks = [];
+      const bookButtons = document.querySelectorAll('.book-btn');
+      const libraryStatus = document.getElementById('library-status');
+      const libraryActions = document.getElementById('library-actions');
+      const actionLinks = document.querySelectorAll('#library-actions a');
+      const hints = [
+        'Hint: what is made of fuel, oxygen, and heat?',
+        'Hint: what you need to do something in the dark.',
+        'Hint: what is something mysterious?',
+        'Hint: what is the organization in godzilla called.'
+      ];
+      let wrongAttempts = 0;
+
+      function normalizeSelection(values) {
+        return [...values].sort().join('|');
+      }
+
+      function unlockLibrary() {
+        libraryStatus.textContent = 'The lock clicks open. The hidden path is yours.';
+        libraryActions.hidden = false;
+        actionLinks.forEach((link) => {
+          link.style.pointerEvents = 'auto';
+          link.style.opacity = '1';
+          link.removeAttribute('tabindex');
+          link.setAttribute('aria-disabled', 'false');
+        });
+      }
+
+      bookButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const value = button.textContent.trim();
+
+          if (libraryActions.hidden === false) {
+            return;
+          }
+
+          if (button.classList.contains('selected')) {
+            button.classList.remove('selected');
+            const index = selectedBooks.indexOf(value);
+            if (index >= 0) {
+              selectedBooks.splice(index, 1);
+            }
+            libraryStatus.textContent = 'The whispering fades. Choose four books again.';
+            return;
+          }
+
+          if (selectedBooks.length >= 4) {
+            libraryStatus.textContent = 'The shelves rattle. You already chose four books. Click one to remove it and try again.';
+            return;
+          }
+
+          selectedBooks.push(value);
+          button.classList.add('selected');
+
+          if (selectedBooks.length < 4) {
+            libraryStatus.textContent = 'The whispering grows louder. Choose one more book.';
+            return;
+          }
+
+          if (normalizeSelection(selectedBooks) === normalizeSelection(correctBooks)) {
+            wrongAttempts = 0;
+            unlockLibrary();
+            return;
+          }
+
+          wrongAttempts += 1;
+          selectedBooks.length = 0;
+          bookButtons.forEach((book) => book.classList.remove('selected'));
+
+          if (wrongAttempts % 4 === 0) {
+            const hintIndex = Math.min((wrongAttempts / 4) - 1, hints.length - 1);
+            libraryStatus.textContent = `The shelves hiss. That code is wrong. ${hints[hintIndex]}`;
+          } else {
+            libraryStatus.textContent = 'The shelves hiss. That code is wrong. Try another four books.';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

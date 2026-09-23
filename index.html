@@ -5,18 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="A simple choose your own adventure game."
+      content="Fun Game."
     />
-    <title>My Choose-Your-Own Adventure!</title>
+    <title>Haunted Castle</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <base href="./" />
   </head>
-  <body>
-    <h1>Choose Your Own Adventure</h1>
-    <p>This is the beginning.</p>
-    <hr />
-    <small>
-      <a href="citations.html">Citations</a>
-    </small>
+  <body class="page-home">
+    <main class="story">
+      <p class="home-kicker"></p>
+      <h1>Haunted<br />Castle</h1>
+      <p class="home-intro">
+        The gates are open. Somewhere beyond the broken towers, a forgotten treasure waits in the dark.
+      </p>
+      <p class="home-warning">Find the treasure. Leave before sunrise, but beware of the castle's secrets.</p>
+
+      <a class="choice-btn" href="castle-hall.html">Enter the castle <span aria-hidden="true">&rarr;</span></a>
+      <div class="creator-pocket">Created by: Josh N. Patel</div>
+    </main>
+
+    <script>
+      try {
+        localStorage.setItem('haunted-castle-lives', '3');
+        localStorage.removeItem('haunted-castle-dead');
+      } catch (error) {
+        console.warn('Could not reset castle state.', error);
+      }
+    </script>
   </body>
 </html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Castle Dungeon</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="page-dungeon">
+    <div class="cell-block" aria-hidden="true">
+      <span class="cell cell-left"></span>
+      <span class="cell cell-center"></span>
+      <span class="cell cell-right"></span>
+      <span class="skeleton skeleton-left"></span>
+      <span class="skeleton skeleton-right"></span>
+    </div>
+    <div class="combat-scene" aria-hidden="true">
+      <div class="fighter">
+        <span class="fighter-sword"></span>
+      </div>
+    </div>
+    <main class="story">
+      <h1>Castle Dungeon</h1>
+      <p id="dungeon-status">The dungeon door slams shut. The skeletons lurch from the cells, arms clawing toward you. You have three choices.</p>
+      <a class="choice-btn run-btn" href="#">Run</a>
+      <a class="choice-btn sneak-btn" href="#">Sneak</a>
+      <a class="choice-btn fight-btn" href="#" aria-label="Fight the skeletons">Fight</a>
+    </main>
+    <script>
+      const dungeonStatus = document.getElementById('dungeon-status');
+      const fightButton = document.querySelector('.fight-btn');
+      const runButton = document.querySelector('.run-btn');
+      const sneakButton = document.querySelector('.sneak-btn');
+      const dungeonBody = document.body;
+
+      runButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        dungeonBody.classList.add('run-mode');
+        dungeonStatus.textContent = 'You bolt for the door, sprinting through the dark as the bones claw at the air behind you.';
+        runButton.textContent = 'Running...';
+        runButton.setAttribute('aria-disabled', 'true');
+        runButton.style.pointerEvents = 'none';
+
+        window.setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1400);
+      });
+
+      sneakButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        dungeonBody.classList.add('sneak-mode');
+        dungeonStatus.textContent = 'You slip between the cells, hidden by the torchlight, and find the old secret path that leads deeper into the castle.';
+        sneakButton.textContent = 'Sneaking...';
+        sneakButton.setAttribute('aria-disabled', 'true');
+        sneakButton.style.pointerEvents = 'none';
+
+        window.setTimeout(() => {
+          window.location.href = 'garden.html';
+        }, 1400);
+      });
+
+      fightButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        dungeonBody.classList.add('fight-mode');
+        dungeonStatus.textContent = 'You lunge at the skeletons, but they overwhelm you in an instant. The dungeon wins. You die and must restart the castle.';
+        fightButton.textContent = 'Dying...';
+        fightButton.setAttribute('aria-disabled', 'true');
+        fightButton.style.pointerEvents = 'none';
+
+        window.setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1800);
+      });
+    </script>
+  </body>
+</html>
