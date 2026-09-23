@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Treasure Room</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="page-treasure">
+    <div class="hallway-arch" aria-hidden="true"></div>
+    <span class="torch torch-left" aria-hidden="true"></span>
+    <span class="torch torch-right" aria-hidden="true"></span>
+    <main class="story">
+      <h1>Treasure Room</h1>
+      <p>The room glows with old gold and shadow. Every inch of the vault feels waiting.</p>
+      <p class="collapse-warning" aria-live="polite">Count Dracula rises from the throne. “Choose,” he says. “Keep the treasure , or leave the gold behind.”</p>
+      <a class="choice-btn" href="ending.html?ending=vampire">Keep the treasure</a>
+      <a class="choice-btn" href="ending.html?ending=treasure">Leave the gold behind</a>
+    </main>
+    <script>
+      const previousPage = new URL(document.referrer || window.location.href, window.location.href).pathname.split("/").pop();
+
+      if (previousPage !== "garden.html") {
+        window.location.replace("garden.html");
+      }
+
+      const returnLink = document.getElementById("return-link");
+      const returnPage = "garden.html";
+      const returnNames = {
+        "garden.html": "the garden"
+      };
+      returnLink.href = returnPage;
+      returnLink.textContent = `Walk away and let Dracula live`;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Castle Tower</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="page-tower">
+    <div class="tower-shape" aria-hidden="true">
+      <span class="tower-window"></span>
+    </div>
+    <main class="story">
+      <h1>Castle Tower</h1>
+      <p>From the tower window, you see a secret entrance beneath the castle, but the path is hidden beneath the garden statue.</p>
+
+      <button id="tower-climb" class="choice-btn" type="button">Climb the stairs</button>
+
+      <p id="tower-status" aria-live="polite">The staircase creaks as the tower breathes around you.</p>
+      <div id="tower-path" class="tower-path" aria-live="polite"></div>
+
+      <div id="tower-battle" style="display: none;">
+        <p id="tower-battle-text">A monster crashes onto the tower roof behind you.</p>
+        <div class="tower-choices">
+          <button class="choice-btn" type="button" data-choice="hide">Hide</button>
+          <button class="choice-btn" type="button" data-choice="run">Run</button>
+          <button class="choice-btn" type="button" data-choice="jump">Jump out the window</button>
+        </div>
+      </div>
+
+      <a id="tower-escape" class="choice-btn" href="ending.html" style="display: none;">Escape through the window</a>
+    </main>
+
+    <script>
+      const status = document.getElementById('tower-status');
+      const towerClimb = document.getElementById('tower-climb');
+      const towerPath = document.getElementById('tower-path');
+      const towerBattle = document.getElementById('tower-battle');
+      const towerBattleText = document.getElementById('tower-battle-text');
+      const towerEscape = document.getElementById('tower-escape');
+
+      function triggerMonsterScene() {
+        towerBattle.style.display = 'block';
+        towerEscape.style.display = 'none';
+        status.textContent = 'You reach the roof and a monster lunges after you.';
+
+        towerBattle.querySelectorAll('button').forEach((button) => {
+          button.addEventListener('click', () => {
+            const choice = button.dataset.choice;
+
+            if (choice === 'hide') {
+              towerBattleText.textContent = 'You hide in the tower shadows, but the room is full of monsters and they drag you into the dark.';
+              window.location.href = 'ending.html?ending=vampire';
+              return;
+            }
+
+            if (choice === 'jump') {
+              towerBattleText.textContent = 'You jump from the tower window, but the fall kills you before you can escape.';
+              window.location.href = 'ending.html?ending=vampire';
+              return;
+            }
+
+            towerBattleText.textContent = 'You run down the tower and slip past the monsters. The hidden passage opens just in time for you to escape.';
+            towerBattle.style.display = 'none';
+            towerEscape.style.display = 'inline-block';
+          });
+        });
+      }
+
+      towerClimb.addEventListener('click', () => {
+        towerBattle.style.display = 'none';
+        towerEscape.style.display = 'none';
+        towerPath.innerHTML = '<span class="tower-step solid-step" aria-label="Climb">Climb</span>';
+        status.textContent = 'You climb the tower and reach the roof.';
+        triggerMonsterScene();
+      });
+    </script>
+  </body>
+</html>

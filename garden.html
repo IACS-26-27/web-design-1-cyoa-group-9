@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Haunted Garden</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="page-garden">
+    <div class="monster-garden" aria-hidden="true">
+      <span class="flower flower-1"></span>
+      <span class="flower flower-2"></span>
+      <span class="flower flower-3"></span>
+      <span class="flower flower-4"></span>
+      <span class="flower flower-5"></span>
+      <span class="flower flower-6"></span>
+    </div>
+    <main class="story">
+      <h1>Haunted Garden</h1>
+      <p id="garden-status">The flowers rise and strike. You have to survive the garden.</p>
+      <p id="life-counter" class="life-counter">Lives: 3</p>
+
+      <div id="garden-step" class="garden-choices" aria-live="polite"></div>
+
+      <div id="garden-exit" class="garden-exit" aria-live="polite" style="pointer-events: none; opacity: 0.45;">
+        <a class="choice-btn" href="#" aria-disabled="true" tabindex="-1" style="pointer-events: none; opacity: 0.45;">Go beneath the statue</a>
+        <a class="choice-btn" href="#" aria-disabled="true" tabindex="-1" style="pointer-events: none; opacity: 0.45;">Run back outside</a>
+      </div>
+    </main>
+
+    <script>
+      const LIFE_KEY = 'haunted-castle-lives';
+      const DEFAULT_LIVES = 3;
+      const status = document.getElementById('garden-status');
+      const lifeCounter = document.getElementById('life-counter');
+      const gardenStep = document.getElementById('garden-step');
+      const gardenExit = document.getElementById('garden-exit');
+
+      const stageDef = [
+        {
+          prompt: 'The first vine lashes out. What do you do?',
+          correct: 'moonlit',
+          choices: [
+            { label: 'Use the moonlit basin', answer: 'moonlit' },
+            { label: 'Kick the roots apart', answer: 'roots' },
+            { label: 'Run deeper into the garden', answer: 'run' }
+          ]
+        },
+        {
+          prompt: 'The roots coil around your ankles. What do you do?',
+          correct: 'roots',
+          choices: [
+            { label: 'Press the roots into the soil', answer: 'roots' },
+            { label: 'Smash the statue', answer: 'stone' },
+            { label: 'Dive through the hedge', answer: 'hedge' }
+          ]
+        },
+        {
+          prompt: 'The last flower opens like a jaw. What do you do?',
+          correct: 'seal',
+          choices: [
+            { label: 'Seal the soil with moonwater', answer: 'seal' },
+            { label: 'Grab the nearest thorn', answer: 'thorn' },
+            { label: 'Dash for the gate', answer: 'gate' }
+          ]
+        }
+      ];
+
+      let currentStage = 0;
+
+      function getLives() {
+        const stored = Number(localStorage.getItem(LIFE_KEY));
+        return Number.isFinite(stored) && stored > 0 ? stored : DEFAULT_LIVES;
+      }
+
+      function setLives(value) {
+        localStorage.setItem(LIFE_KEY, String(value));
+      }
+
+      function updateLivesDisplay() {
+        lifeCounter.textContent = 'Lives: ' + getLives();
+      }
+
+      function renderStage() {
+        const stage = stageDef[currentStage];
+        status.textContent = stage.prompt;
+        gardenStep.innerHTML = stage.choices
+          .map((choice) => `
+            <button class="choice-btn garden-choice" type="button" data-answer="${choice.answer}">${choice.label}</button>
+          `)
+          .join('');
+
+        gardenStep.querySelectorAll('.garden-choice').forEach((button) => {
+          button.addEventListener('click', () => {
+            const chosenAnswer = button.dataset.answer;
+
+            if (chosenAnswer === stage.correct) {
+              currentStage += 1;
+
+              if (currentStage >= stageDef.length) {
+                document.body.classList.add('garden-solved');
+                status.textContent = 'The garden finally stills. The last bloom falls silent.';
+                gardenStep.innerHTML = '';
+                gardenExit.style.pointerEvents = 'auto';
+                gardenExit.style.opacity = '1';
+
+                gardenExit.querySelectorAll('a').forEach((link) => {
+                  link.style.pointerEvents = 'auto';
+                  link.style.opacity = '1';
+                  link.removeAttribute('aria-disabled');
+                  link.removeAttribute('tabindex');
+                  link.setAttribute('href', link.textContent.includes('Go beneath the statue') ? 'treasure-room.html' : 'ending.html');
+                });
+                return;
+              }
+
+              renderStage();
+              return;
+            }
+
+            let lives = getLives() - 1;
+            setLives(lives);
+            updateLivesDisplay();
+
+            if (lives <= 0) {
+              localStorage.setItem('haunted-castle-dead', 'true');
+              window.location.href = 'ending.html?ending=eaten';
+              return;
+            }
+
+            document.body.classList.add('garden-attacking');
+            status.textContent = 'The flowers tear through you. You lose a life and the garden resets.';
+            currentStage = 0;
+            window.setTimeout(() => {
+              document.body.classList.remove('garden-attacking');
+              renderStage();
+            }, 500);
+          });
+        });
+      }
+
+      setLives(getLives());
+      updateLivesDisplay();
+      renderStage();
+    </script>
+  </body>
+</html>
